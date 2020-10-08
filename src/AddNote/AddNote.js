@@ -1,14 +1,26 @@
 import React from "react";
 import "./AddNote.css";
 import ApiContext from '../ApiContext';
-import config from '../config';
+import ValidationError from '../ValildationError';
+import ErrorBoundary from '../ErrorBoundary';
+import PropTypes from 'prop-types';
 
 export default class AddNote extends React.Component {
 static contextType = ApiContext
+
+  state = {
+    name: {
+      value: " ",
+      touched: false
+    }
+  }
+
+
+
   handleSubmit = e => {
     e.preventDefault()
     // get the form fields from the event
-    const { noteName, noteContent, noteFolder} = e.target.elements
+    const { noteName, noteContent} = e.target.elements
     const newNote = {
       name: noteName.value,
       content: noteContent.value,
@@ -43,55 +55,65 @@ static contextType = ApiContext
       .catch(error => {
         this.setState({ error })
       })
+
+      this.props.history.push('/');
   }
-/*
-  fetch(`${config.API_ENDPOINT}/notes/${noteId}` {
-    method: 'DELETE',
-    headers: {
-      'content-type': 'application/json'
-    },
-  })
-    .then(res => {
-      if (!res.ok)
-        return res.json().then(e => Promise.reject(e))
-      return res.json()
-    })
-    .then(() => {
-      this.context.deleteNote(noteId)
-      // allow parent to perform extra behaviour
-      this.props.onDeleteNote(noteId)
-    })
-    .catch(error => {
-      console.error({ error })
-    })
+
+  updateName(name) {
+    this.setState({
+      name: {
+        value:name,
+        touched: true
+      }
+    });
+  }
+
+
+    validateName() {
+    const name = this.state.name.value.trim();
+    if (name.length === 0) {
+      return "Name is required"
+  }
 }
-*/
-    //using values from the state, call addNote on the context, add on change listeners and add a function to detect when those fields are changing, properties to add are three inputs in the return statement
+  
+
 
   render() {
+    const nameError = this.validateName();
     const { className } = this.props;
     return (
       <ApiContext.Consumer>
         {({ folders }) => (
+          <ErrorBoundary>
           <form
             onSubmit={this.handleSubmit}
             className={["Noteful-form", className].join(" ")}
             action="#"
           >
             <label>Name</label>
-            <input name="noteName" type="text" id="noteName"/>
+            <input required name="noteName" type="text" id="noteName" onChange={e => this.updateName(e.target.value)}/>
+            {this.state.name.touched && <ValidationError message={nameError} />}
             <label>Content</label>
-            <input name="noteContent" type="text" id="noteContent"/>
+            <input required name="noteContent" type="text" id="noteContent"/>
             <label>Folder</label>
-            <select id="folderNameSelect">
+            <select required id="folderNameSelect">
               {folders.map((folder) => (
                 <option name="noteFolder" value={folder.id} id="noteFolder">{folder.name}</option>
               ))}
             </select>
             <button type="submit">Submit</button>
           </form>
+          </ErrorBoundary>
         )}
       </ApiContext.Consumer>
     );
   }
+}
+
+AddNote.propTypes = {
+  notes: PropTypes.arrayOf(PropTypes.shape ({
+    name: PropTypes.string.isRequired,
+    modified:PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired
+  }))
 }
