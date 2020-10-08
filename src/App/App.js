@@ -9,12 +9,20 @@ import AddNote from '../AddNote/AddNote';
 import ApiContext from '../ApiContext';
 import config from '../config';
 import './App.css';
+import AddFolder from '../AddFolder/AddFolder';
+// import { faTintSlash } from '@fortawesome/free-solid-svg-icons';
 
 class App extends Component {
     state = {
         notes: [],
         folders: []
     };
+
+    // setNotes = notes => {
+    //     this.setState({
+    //         notes, 
+    //     })
+    // }
 
     componentDidMount() {
         Promise.all([
@@ -40,6 +48,13 @@ class App extends Component {
     handleDeleteNote = noteId => {
         this.setState({
             notes: this.state.notes.filter(note => note.id !== noteId)
+        });
+    };
+
+    handleAddNote = note => {
+        console.log(note)
+        this.setState({
+            notes: [...this.state.notes, note]
         });
     };
 
@@ -75,6 +90,7 @@ class App extends Component {
                 ))}
                 <Route path="/note/:noteId" component={NotePageMain} />
                 <Route path="/add-note" component={AddNote} />
+                <Route path="/add-folder" component={AddFolder} />
             </>
         );
     }
@@ -83,7 +99,8 @@ class App extends Component {
         const value = {
             notes: this.state.notes,
             folders: this.state.folders,
-            deleteNote: this.handleDeleteNote
+            deleteNote: this.handleDeleteNote,
+            addNote: this.handleAddNote,
         };
         return (
             <ApiContext.Provider value={value}>

@@ -4,9 +4,45 @@ import ApiContext from '../ApiContext';
 import config from '../config';
 
 export default class AddNote extends React.Component {
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(this.state);
+static contextType = ApiContext
+  handleSubmit = e => {
+    e.preventDefault()
+    // get the form fields from the event
+    const { noteName, noteContent, noteFolder} = e.target.elements
+    const newNote = {
+      name: noteName.value,
+      content: noteContent.value,
+      folderId: document.getElementById("folderNameSelect").value,
+      modified: Date.now(),
+    }
+
+    console.log(newNote)
+    this.setState({ error: null })
+    fetch('http://localhost:9090/notes', {
+      method: 'POST',
+      body: JSON.stringify(newNote),
+      headers: {
+        'content-type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          // get the error message from the response,
+          return res.json().then(error => {
+            // then throw it
+            throw error
+          })
+        }
+        return res.json()
+      })
+      .then(data => {
+        noteName.value = ''
+        noteContent.value = ''
+        this.context.addNote(data)
+      })
+      .catch(error => {
+        this.setState({ error })
+      })
   }
 /*
   fetch(`${config.API_ENDPOINT}/notes/${noteId}` {
@@ -43,13 +79,13 @@ export default class AddNote extends React.Component {
             action="#"
           >
             <label>Name</label>
-            <input type="text" id="noteName"/>
+            <input name="noteName" type="text" id="noteName"/>
             <label>Content</label>
-            <input type="text" id="noteContent"/>
+            <input name="noteContent" type="text" id="noteContent"/>
             <label>Folder</label>
-            <select>
+            <select id="folderNameSelect">
               {folders.map((folder) => (
-                <option value={folder.id} id="noteFolder">{folder.name}</option>
+                <option name="noteFolder" value={folder.id} id="noteFolder">{folder.name}</option>
               ))}
             </select>
             <button type="submit">Submit</button>
