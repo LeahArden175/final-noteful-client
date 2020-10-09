@@ -56,7 +56,7 @@ export default class AddFolder extends Component {
             onSubmit={this.handleSubmit}
           >
             <label>Name: </label>
-            <input type="text" name="folderName" />
+            <input type="text" name="folderName" required/>
             <button type="submit">Add Folder</button>
           </form>
         </div>

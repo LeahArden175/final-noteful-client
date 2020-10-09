@@ -28,6 +28,8 @@ static contextType = ApiContext
       modified: Date.now(),
     }
 
+    
+
     console.log(newNote)
     this.setState({ error: null })
     fetch('http://localhost:9090/notes', {
