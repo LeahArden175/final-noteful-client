@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../ApiContext'
+import PropTypes from 'prop-types';
 import config from '../config'
 import './Note.css'
 
@@ -67,4 +68,13 @@ export default class Note extends React.Component {
       </div>
     )
   }
+}
+
+
+Note.propTypes = {
+  notes: PropTypes.arrayOf(PropTypes.shape({
+  id: PropTypes.required,
+  name: PropTypes.string.required,
+  modified: PropTypes.string.required
+}))
 }
