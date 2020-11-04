@@ -10,14 +10,13 @@ export default class AddFolder extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     // get the form fields from the event
-    const { folderName } = e.target.elements;
+    const { folderTitle } = e.target.elements;
     const newFolder = {
-      name: folderName.value,
+      title: folderTitle.value,
     };
 
-    console.log(newFolder);
     this.setState({ error: null });
-    fetch("http://localhost:9090/folders", {
+    fetch("http://localhost:9090/api/folders", {
       method: "POST",
       body: JSON.stringify(newFolder),
       headers: {
@@ -35,7 +34,7 @@ export default class AddFolder extends Component {
         return res.json();
       })
       .then((data) => {
-        folderName.value = "";
+        folderTitle.value = "";
         this.context.addFolder(data);
       })
       .catch((error) => {
@@ -55,8 +54,8 @@ export default class AddFolder extends Component {
             className={["Noteful-form", className].join(" ")}
             onSubmit={this.handleSubmit}
           >
-            <label>Name: </label>
-            <input type="text" name="folderName" required/>
+            <label>Title: </label>
+            <input type="text" name="folderTitle" required/>
             <button type="submit">Add Folder</button>
           </form>
         </div>
@@ -68,7 +67,7 @@ export default class AddFolder extends Component {
 AddFolder.propTypes = {
   folders: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
     })
   ),
 };

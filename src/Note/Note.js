@@ -15,6 +15,7 @@ export default class Note extends React.Component {
 
   handleClickDelete = e => {
     e.preventDefault()
+    console.log('delete button pressed')
     const noteId = this.props.id
 
     fetch(`${config.API_ENDPOINT}/notes/${noteId}`, {
@@ -23,11 +24,6 @@ export default class Note extends React.Component {
         'content-type': 'application/json'
       },
     })
-      .then(res => {
-        if (!res.ok)
-          return res.json().then(e => Promise.reject(e))
-        return res.json()
-      })
       .then(() => {
         this.context.deleteNote(noteId)
         // allow parent to perform extra behaviour
@@ -39,12 +35,12 @@ export default class Note extends React.Component {
   }
 
   render() {
-    const { name, id, modified } = this.props
+    const { title, id, date_modified } = this.props
     return (
       <div className='Note'>
         <h2 className='Note__title'>
           <Link to={`/note/${id}`}>
-            {name}
+            {title}
           </Link>
         </h2>
         <button
@@ -61,7 +57,7 @@ export default class Note extends React.Component {
             Modified
             {' '}
             <span className='Date'>
-              {format(modified, 'Do MMM YYYY')}
+              {format(date_modified, 'Do MMM YYYY')}
             </span>
           </div>
         </div>
@@ -74,7 +70,7 @@ export default class Note extends React.Component {
 Note.propTypes = {
   notes: PropTypes.arrayOf(PropTypes.shape({
   id: PropTypes.required,
-  name: PropTypes.string.required,
-  modified: PropTypes.string.required
+  title: PropTypes.string.required,
+  date_modified: PropTypes.string.required
 }))
 }

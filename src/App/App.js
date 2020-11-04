@@ -18,12 +18,6 @@ class App extends Component {
         folders: []
     };
 
-    // setNotes = notes => {
-    //     this.setState({
-    //         notes, 
-    //     })
-    // }
-
     componentDidMount() {
         Promise.all([
             fetch(`${config.API_ENDPOINT}/notes`),

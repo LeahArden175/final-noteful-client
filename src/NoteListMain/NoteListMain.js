@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Note from '../Note/Note'
 import CircleButton from '../CircleButton/CircleButton'
 import ApiContext from '../ApiContext'
-import { getNotesForFolder } from '../notes-helpers'
+import { getNotesForFolder} from '../notes-helpers'
 import PropTypes from 'prop-types'
 import './NoteListMain.css'
 
@@ -27,8 +27,8 @@ export default class NoteListMain extends React.Component {
             <li key={note.id}>
               <Note
                 id={note.id}
-                name={note.name}
-                modified={note.modified}
+                title={note.title}
+                date_modified={note.date_modified}
               />
             </li>
           )}
